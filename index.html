@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popfrog</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #4cc9f0;
+      flex-direction: column;
+      overflow: hidden; /* กันไม่ให้เลื่อน */
+    }
+    img {
+      max-height: 80vh;   /* ไม่เกิน 80% ของจอ */
+      max-width: 90vw;    /* ไม่เกิน 90% ของจอ */
+      width: auto;
+      height: auto;
+      cursor: pointer;
+      user-select: none;
+    }
+    #counter {
+      position: absolute;
+      top: 10px;
+      font-size: 6vw;   /* ใช้ขนาดตามหน้าจอ (responsive) */
+      font-weight: bold;
+      color: white;
+      text-shadow: 
+        -2px -2px 0 #000,  
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000;
+    }
+    #muteBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 6px 12px;
+      font-size: 4vw;   /* ปรับตามจอ */
+      border: none;
+      border-radius: 8px;
+      background: #ffb703;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="counter">0</div>
+  <button id="muteBtn">🔊 เสียงเปิด</button>
+  <img id="frog" src="frog_closed.png" alt="frog">
+
+  <script>
+    let count = 0;
+    let muted = false;
+    const counter = document.getElementById("counter");
+    const frog = document.getElementById("frog");
+    const muteBtn = document.getElementById("muteBtn");
+
+    // โหลดคะแนนเก่า
+    if (localStorage.getItem("popfrogScore")) {
+      count = parseInt(localStorage.getItem("popfrogScore"));
+      counter.textContent = count;
+    }
+
+    const ribbit = new Audio("Frog-sound-ribbit.mp3");
+
+    // รองรับทั้ง mouse และ touch
+    function pressDown() {
+      frog.src = "frog_open.jpg";
+      if (!muted) {
+        ribbit.currentTime = 0;
+        ribbit.play();
+      }
+      count++;
+      counter.textContent = count;
+      localStorage.setItem("popfrogScore", count);
+    }
+
+    function pressUp() {
+      frog.src = "frog_closed.png";
+    }
+
+    frog.addEventListener("mousedown", pressDown);
+    frog.addEventListener("mouseup", pressUp);
+    frog.addEventListener("touchstart", pressDown);
+    frog.addEventListener("touchend", pressUp);
+
+    muteBtn.addEventListener("click", () => {
+      muted = !muted;
+      muteBtn.textContent = muted ? "🔇 เสียงปิด" : "🔊 เสียงเปิด";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Popfrog</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #4cc9f0;
+      flex-direction: column;
+    }
+    img {
+      height: 80vh;
+      cursor: pointer;
+      user-select: none;
+    }
+    #counter {
+      position: absolute;
+      top: 20px;
+      font-size: 2.5em;
+      font-weight: bold;
+      color: white;
+      text-shadow: 
+        -2px -2px 0 #000,  
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000;
+    }
+    #muteBtn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 15px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background: #ffb703;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="counter">0</div>
+  <button id="muteBtn">🔊 เสียงเปิด</button>
+  <img id="frog" src="frog_closed.png" alt="frog">
+
+  <script>
+    let count = 0;
+    let muted = false;
+    const counter = document.getElementById("counter");
+    const frog = document.getElementById("frog");
+    const muteBtn = document.getElementById("muteBtn");
+
+    // โหลดคะแนนเก่า ถ้ามี
+    if (localStorage.getItem("popfrogScore")) {
+      count = parseInt(localStorage.getItem("popfrogScore"));
+      counter.textContent = count;
+    }
+
+    // โหลดเสียง
+    const ribbit = new Audio("Frog-sound-ribbit.mp3");
+
+    frog.addEventListener("mousedown", () => {
+      frog.src = "frog_open.jpg";   
+      if (!muted) {
+        ribbit.currentTime = 0;
+        ribbit.play();              
+      }
+      count++;
+      counter.textContent = count;
+
+      // บันทึกคะแนนลง localStorage
+      localStorage.setItem("popfrogScore", count);
+    });
+
+    frog.addEventListener("mouseup", () => {
+      frog.src = "frog_closed.png";
+    });
+
+    // ปุ่มปิด/เปิดเสียง
+    muteBtn.addEventListener("click", () => {
+      muted = !muted;
+      muteBtn.textContent = muted ? "🔇 เสียงปิด" : "🔊 เสียงเปิด";
+    });
+  </script>
+</body>
+</html>
